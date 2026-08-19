@@ -5,11 +5,21 @@ Code-controlled Kong Designs website, migrated from ChatGPT Sites to Vite/React 
 ## Architecture
 
 - `src/site/`: the Kong Designs visual and content layer.
-- `src/experience/`: reusable Experience Engine client contract and UI.
+- `src/experience/`: Engine contract and UI behavior.
+- `src/experience/verticals/`: reusable defaults and rules for a type of business.
+- `src/experience/clients/`: company-specific integrations, identity, persona and knowledge-base IDs.
 - `netlify/functions/`: server-side adapters for chat, calls, events, and contact intake.
 - `.env.example`: site wiring only; secrets remain in Netlify.
 
-The engine receives a site configuration instead of containing dental or Kong Designs copy. Kong Designs is the second real consumer of the WDM contract. After Dental and Kong Designs pass end-to-end QA, the stable client/server core can move into a shared `@wdm/experience-engine` package without moving either site's content or design.
+The runtime composes `Core + Vertical Pack + Client Config`; it does not contain Dental or Kong Designs copy. Kong Designs is the second real consumer of the WDM contract. After Dental and Kong Designs pass end-to-end QA, only the identical client/server behavior moves into shared `@wdm/*` packages. Each site keeps its own composition and CSS.
+
+## Current Kong Designs wiring
+
+- Booking: GoHighLevel embed configured in `src/experience/clients/kongDesigns.ts`.
+- Phone: shared MX/Canada/US country selector, normalized to E.164 before it reaches a function.
+- Chat: v2 request contract is prepared; the multi-vertical n8n prompt still needs to be activated.
+- Call: UI and request contract are prepared; the Kong Designs Twilio/n8n route still needs configuration.
+- Avatar: stays explicitly unavailable until a Kong Designs D-ID agent is assigned.
 
 ## Local development
 
