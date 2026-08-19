@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { BookingExperience } from "./BookingExperience";
 import { PhoneField } from "./PhoneField";
 import { getExperienceSession, trackExperienceEvent } from "./tracking";
 import type { ExperienceAction, ExperienceMessage, ExperienceProfile, ExperienceReply, ExperienceSiteConfig, ExperienceView } from "./types";
@@ -105,7 +106,7 @@ export function ExperienceAssistant({ config }: { config: ExperienceSiteConfig }
             <button className={view === "avatar" ? "is-active" : ""} onClick={() => openView("avatar")}>Avatar</button>
           </nav>
           {view === "chat" && <Chat messages={messages} quickReplies={quickReplies} input={input} typing={typing} onInput={setInput} onAsk={ask} />}
-          {view === "booking" && <Booking config={config} onBack={() => setView("chat")} />}
+          {view === "booking" && <BookingExperience config={config} visitor={profile} onBack={() => setView("chat")} />}
           {view === "call" && <Call config={config} profile={profile} onBack={() => setView("chat")} />}
           {view === "avatar" && <Avatar url={config.integrations.avatar?.url} onBack={() => setView("chat")} />}
         </>}
@@ -125,11 +126,6 @@ function Onboarding({ config, onComplete }: { config: ExperienceSiteConfig; onCo
 function Chat({ messages, quickReplies, input, typing, onInput, onAsk }: { messages: ExperienceMessage[]; quickReplies: string[]; input: string; typing: boolean; onInput: (value: string) => void; onAsk: (value: string) => Promise<void> }) {
   function submit(event: FormEvent) { event.preventDefault(); void onAsk(input); }
   return <div className="wdm-chat"><div className="wdm-chat__messages" role="log" aria-live="polite">{messages.map((message, index) => <div className={`wdm-message is-${message.role}`} key={`${index}-${message.content}`}>{message.content}</div>)}{typing && <div className="wdm-message is-assistant is-typing">•••</div>}</div>{quickReplies.length > 0 && <div className="wdm-chat__quick">{quickReplies.map((reply) => <button key={reply} onClick={() => void onAsk(reply)}>{reply}<span>↗</span></button>)}</div>}<form onSubmit={submit}><input value={input} onChange={(event) => onInput(event.target.value)} placeholder="Escribe tu pregunta…" disabled={typing} /><button aria-label="Enviar" disabled={typing}>↑</button></form></div>;
-}
-
-function Booking({ config, onBack }: { config: ExperienceSiteConfig; onBack: () => void }) {
-  const booking = config.integrations.booking;
-  return <div className="wdm-action"><h3>{booking?.title || "Agenda directamente"}</h3><p>{booking?.description || "Escoge una hora aquí mismo. No necesitas salir del sitio."}</p>{booking?.url ? <iframe title={booking.title} src={booking.url} /> : <p className="wdm-notice">La agenda todavía no está conectada.</p>}<button className="wdm-back" onClick={onBack}>← Volver al chat</button></div>;
 }
 
 function Call({ config, profile, onBack }: { config: ExperienceSiteConfig; profile: ExperienceProfile; onBack: () => void }) {

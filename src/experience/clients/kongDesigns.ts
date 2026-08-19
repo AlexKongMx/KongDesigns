@@ -16,8 +16,10 @@ export const kongDesignsClient: ExperienceClientConfig = {
   integrations: {
     booking: {
       provider: "ghl",
-      mode: "embed",
+      mode: "api",
+      endpoint: "/api/experience-booking",
       url: import.meta.env.VITE_WDM_BOOKING_URL || defaultBookingUrl,
+      timezone: "America/Vancouver",
       title: "Agenda una llamada",
       description: "Escoge una hora aquí mismo para platicar sobre tu proyecto.",
     },

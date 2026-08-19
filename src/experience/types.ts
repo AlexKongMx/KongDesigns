@@ -53,7 +53,9 @@ export type ExperienceClientConfig = {
     booking?: {
       provider: "ghl";
       mode: "embed" | "api";
+      endpoint?: string;
       url?: string;
+      timezone?: string;
       title: string;
       description: string;
     };
