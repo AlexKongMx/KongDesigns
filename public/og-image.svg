@@ -1,0 +1,30 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(1008 170) rotate(132) scale(420 500)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D8FF35" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#D8FF35" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="warm" x1="905" y1="32" x2="1144" y2="432" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF5631" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#FF5631" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M42 0H0V42" stroke="#F5F2E9" stroke-opacity="0.13"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="#11110F"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect width="1200" height="630" fill="url(#warm)"/>
+  <circle cx="1010" cy="310" r="260" stroke="#F5F2E9" stroke-opacity="0.22"/>
+  <ellipse cx="1000" cy="305" rx="350" ry="116" transform="rotate(-25 1000 305)" stroke="#FF5631" stroke-opacity="0.8"/>
+  <ellipse cx="1000" cy="305" rx="260" ry="80" transform="rotate(23 1000 305)" stroke="#F5F2E9" stroke-opacity="0.28"/>
+  <rect x="755" y="55" width="420" height="500" fill="url(#grid)" opacity="0.7"/>
+  <circle cx="1090" cy="174" r="8" fill="#FF5631"/>
+  <text x="76" y="88" fill="#D8FF35" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="4">KONG DESIGNS</text>
+  <text x="76" y="150" fill="#F5F2E9" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="3">DISEÑO WEB PARA NEGOCIOS CON AMBICIÓN</text>
+  <text x="70" y="310" fill="#F5F2E9" font-family="Arial, Helvetica, sans-serif" font-size="112" font-weight="900" letter-spacing="-7">TU NEGOCIO</text>
+  <text x="72" y="420" fill="#FF5631" font-family="Georgia, Times New Roman, serif" font-size="115" font-style="italic" letter-spacing="-6">merece destacar.</text>
+  <path d="M78 492H500" stroke="#F5F2E9" stroke-opacity="0.35"/>
+  <text x="76" y="548" fill="#F5F2E9" fill-opacity="0.72" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" letter-spacing="2">ESTRATEGIA · DISEÑO · CONVERSIÓN</text>
+  <text x="1095" y="558" fill="#D8FF35" font-family="Arial, Helvetica, sans-serif" font-size="74" font-weight="900" text-anchor="middle">K</text>
+</svg>
