@@ -26,7 +26,7 @@ const copy = {
   es: {
     navAria: "Navegación principal", homeAria: "Kong Designs, inicio", work: "Trabajo", services: "Servicios", contact: "Contacto",
     eyebrow: "Diseño digital, apps y automatización para negocios con ambición", heroA: "Tu negocio merece", heroB: "verse", heroEm: "poca madre.",
-    heroBody: "Diseñamos websites, apps y sistemas de automatización que se ven poca madre y trabajan todavía mejor. Estrategia, diseño y tecnología conectados para generar oportunidades y hacer crecer tu negocio.", projects: "Ver proyectos",
+    heroBody: "Websites, apps y sistemas de automatización que generan resultados.", projects: "Ver proyectos",
     ticker: ["WEBSITES", "APPS", "SISTEMAS", "AUTOMATIZACIÓN", "OUTREACH", "LEAD GEN", "CRM", "CONVERSIÓN"], selected: "01 — TRABAJO SELECCIONADO", selectedTitle: "Proyectos seleccionados", selectedBody: "Una selección de websites, apps y sistemas que hemos diseñado, construido y automatizado.", open: "Abrir", cover: "Portada del sitio", dentalCta: "AGENDA UNA VALORACIÓN ↗",
     what: "02 — QUÉ HACEMOS", servicesTitleA: "Bonito por fuera.", servicesTitleB: "Potente por dentro.", strategy: "Estrategia", strategyBody: "Definimos qué debe comunicar cada producto, a quién debe mover y qué resultado debe provocar.", websites: "Websites y apps", websitesBody: "Experiencias digitales únicas, rápidas y optimizadas para móvil que hacen justicia a tu negocio.", conversion: "Sistemas y automatización", conversionBody: "CRM, outreach, lead generation y seguimiento conectados para convertir oportunidades en conversaciones y ventas.",
     next: "03 — SIGUIENTE PROYECTO", contactA: "Hagamos algo", contactB: "que destaque.", lead: "Cuéntame qué estás construyendo. Te respondo personalmente con ideas y un siguiente paso claro.", email: "Correo", phone: "Teléfono",
@@ -35,7 +35,7 @@ const copy = {
   en: {
     navAria: "Main navigation", homeAria: "Kong Designs, home", work: "Work", services: "Services", contact: "Contact",
     eyebrow: "Digital design, apps and automation for ambitious businesses", heroA: "Your business deserves", heroB: "to look", heroEm: "damn good.",
-    heroBody: "We design websites, apps and automation systems that look damn good and work even harder. Strategy, design and technology connected to create opportunities and grow your business.", projects: "View projects",
+    heroBody: "Websites, apps and automation systems built to generate results.", projects: "View projects",
     ticker: ["WEBSITES", "APPS", "SYSTEMS", "AUTOMATION", "OUTREACH", "LEAD GEN", "CRM", "CONVERSION"], selected: "01 — SELECTED WORK", selectedTitle: "Selected projects", selectedBody: "A selection of websites, apps and systems we've designed, built and automated.", open: "Open", cover: "Website cover for", dentalCta: "BOOK A CONSULTATION ↗",
     what: "02 — WHAT WE DO", servicesTitleA: "Beautiful outside.", servicesTitleB: "Powerful inside.", strategy: "Strategy", strategyBody: "We define what each product needs to communicate, who it needs to move, and what result it should drive.", websites: "Websites & apps", websitesBody: "Unique, fast, mobile-optimized digital experiences that do your business justice.", conversion: "Systems & automation", conversionBody: "CRM, outreach, lead generation and follow-up connected to turn opportunities into conversations and sales.",
     next: "03 — YOUR NEXT PROJECT", contactA: "Let's build something", contactB: "that stands out.", lead: "Tell me what you're building. I'll personally reply with ideas and a clear next step.", email: "Email", phone: "Phone",
@@ -54,6 +54,18 @@ export default function Home() {
   const languageSwitch = <button type="button" onClick={() => setLang(lang === "es" ? "en" : "es")} aria-label={lang === "es" ? "Switch to English" : "Cambiar a español"} style={{ border: 0, background: "transparent", color: "inherit", font: "inherit", fontWeight: 800, letterSpacing: ".08em", cursor: "pointer", padding: "8px 4px" }}>{lang === "es" ? "EN" : "ES"}</button>;
 
   return <main>
+    <style>{`
+      body{overflow-x:hidden}
+      .nav-cta{background:var(--acid)}
+      .nav-cta:hover{background:var(--ink);color:white}
+      .hero{overflow:visible}
+      .hero:before{left:50%;right:auto;width:100vw;inset-block:0;transform:translateX(-50%)}
+      .eyebrow i{flex:0 0 8px}
+      .hero-bottom{margin-left:0;grid-template-columns:minmax(0,760px) auto;gap:48px;align-items:end}
+      .hero-bottom>p{max-width:760px;font-size:18px;line-height:1.35;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+      @media(max-width:900px){.hero{overflow:hidden}.hero:before{width:calc(100% + 48px)}.hero-bottom{grid-template-columns:1fr;gap:28px}}
+      @media(max-width:560px){.hero-bottom>p{font-size:15px;line-height:1.45;letter-spacing:.06em}}
+    `}</style>
     <nav className="nav shell" aria-label={t.navAria}><a className="brand" href="#top" aria-label={t.homeAria}>KONG DESIGNS<span>®</span></a><div className="nav-links"><a href="#work">{t.work}</a><a href="#services">{t.services}</a><a href="#contact">{t.contact}</a></div><div className="nav-actions" style={{ justifySelf: "end", display: "flex", alignItems: "center", gap: 10 }}>{languageSwitch}<a className="nav-cta" href={whatsapp} target="_blank" rel="noreferrer"><span className="nav-cta-label">WhatsApp</span><span className="nav-cta-arrow">↗</span></a></div></nav>
     <header className="hero shell" id="top"><div className="hero-orbit orbit-one" aria-hidden="true" /><div className="hero-orbit orbit-two" aria-hidden="true" /><div className="hero-grid" aria-hidden="true" /><div className="eyebrow"><i /> {t.eyebrow}</div><h1>{t.heroA}<br />{t.heroB} <em>{t.heroEm}</em></h1><div className="hero-bottom"><p>{t.heroBody}</p><div className="hero-actions"><a className="button primary" href="#work">{t.projects} <span>↓</span></a></div></div><div className="hero-stamp" aria-hidden="true"><span>DESIGN · BUILD · GROW ·</span><b>K</b></div></header>
     <section className="ticker" aria-label={t.services}><div>{[0,1,2,3].flatMap((round) => t.ticker.map((item, index) => <span key={`${round}-${index}`}><span>{item}</span><b>✳</b></span>))}</div></section>
