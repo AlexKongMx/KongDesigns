@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import App from "./site/App";
 import "./site/styles.css";
 import "./experience/experience.css";
+import "./site/hero-fix.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
