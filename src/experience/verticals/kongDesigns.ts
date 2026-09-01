@@ -17,6 +17,7 @@ export const kongDesignsVerticalPack: ExperienceVerticalPack = {
     "REQUEST_AI_CALL",
     "START_AI_AVATAR",
     "OPEN_WHATSAPP",
+    "REQUEST_HUMAN_CALLBACK",
     "BOOK_KONG_CALL",
   ],
   behavior: {
