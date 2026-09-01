@@ -3,6 +3,7 @@ export type ExperienceAction =
   | "REQUEST_AI_CALL"
   | "START_AI_AVATAR"
   | "OPEN_WHATSAPP"
+  | "REQUEST_HUMAN_CALLBACK"
   | "BOOK_KONG_CALL";
 
 export type ExperienceView = "chat" | "booking" | "call" | "avatar";
@@ -106,4 +107,7 @@ export type ExperienceReply = {
   quickReplies?: string[];
   action?: ExperienceAction | null;
   intent?: string | null;
+  handoffAction?: string | null;
+  handoffId?: string | null;
+  handoffStatus?: string | null;
 };

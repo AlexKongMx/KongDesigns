@@ -14,7 +14,9 @@ export function ExperienceAssistant({ config }: { config: ExperienceSiteConfig }
   const [quickReplies, setQuickReplies] = useState(config.quickReplies);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
+  const [handoffStatus, setHandoffStatus] = useState("none");
   const dialogRef = useRef<HTMLDivElement>(null);
+  const handoffMessageIdsRef = useRef(new Set<string>());
 
   useEffect(() => {
     try {
@@ -28,6 +30,37 @@ export function ExperienceAssistant({ config }: { config: ExperienceSiteConfig }
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
   }, []);
+
+  useEffect(() => {
+    if (!open || !profile) return;
+    let stopped = false;
+    const pollHandoff = async () => {
+      try {
+        const { sessionId } = getExperienceSession();
+        const response = await fetch("/api/experience-handoff-status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId }),
+          cache: "no-store",
+        });
+        if (!response.ok || stopped) return;
+        const result = await response.json() as { status?: unknown; messages?: Array<{ id?: unknown; text?: unknown }> };
+        if (typeof result.status === "string") setHandoffStatus(result.status || "none");
+        for (const item of result.messages || []) {
+          const id = typeof item.id === "string" ? item.id : "";
+          const message = typeof item.text === "string" ? item.text.trim() : "";
+          if (!id || !message || handoffMessageIdsRef.current.has(id)) continue;
+          handoffMessageIdsRef.current.add(id);
+          setMessages((items) => [...items, { role: "assistant", content: message }]);
+        }
+      } catch {
+        // A status check must never interrupt the active assistant.
+      }
+    };
+    void pollHandoff();
+    const timer = window.setInterval(() => void pollHandoff(), 3500);
+    return () => { stopped = true; window.clearInterval(timer); };
+  }, [open, profile]);
 
   function openView(next: ExperienceView) {
     setView(next);
@@ -83,6 +116,7 @@ export function ExperienceAssistant({ config }: { config: ExperienceSiteConfig }
       });
       const result = await response.json() as ExperienceReply;
       if (!response.ok || !result.reply) throw new Error("assistant unavailable");
+      if (typeof result.handoffStatus === "string") setHandoffStatus(result.handoffStatus || "none");
       setMessages((items) => [...items, { role: "assistant", content: result.reply }]);
       setQuickReplies(Array.isArray(result.quickReplies) ? result.quickReplies.slice(0, 3) : []);
       routeAction(result.action);
@@ -105,7 +139,7 @@ export function ExperienceAssistant({ config }: { config: ExperienceSiteConfig }
             <button className={view === "call" ? "is-active" : ""} onClick={() => openView("call")}>Llamada</button>
             <button className={view === "avatar" ? "is-active" : ""} onClick={() => openView("avatar")}>Avatar</button>
           </nav>
-          {view === "chat" && <Chat messages={messages} quickReplies={quickReplies} input={input} typing={typing} onInput={setInput} onAsk={ask} />}
+          {view === "chat" && <Chat messages={messages} handoffStatus={handoffStatus} quickReplies={quickReplies} input={input} typing={typing} onInput={setInput} onAsk={ask} />}
           {view === "booking" && <BookingExperience config={config} visitor={profile} onBack={() => setView("chat")} />}
           {view === "call" && <Call config={config} profile={profile} onBack={() => setView("chat")} />}
           {view === "avatar" && <Avatar url={config.integrations.avatar?.url} onBack={() => setView("chat")} />}
@@ -123,9 +157,16 @@ function Onboarding({ config, onComplete }: { config: ExperienceSiteConfig; onCo
   return <div className="wdm-onboarding"><p className="wdm-eyebrow">PRUEBA LA EXPERIENCIA</p><h3>Veamos qué podemos construir para ti.</h3><p>Déjanos tus datos para personalizar el chat, la llamada y la agenda.</p><form onSubmit={(event) => { event.preventDefault(); if (name.trim() && /^\S+@\S+\.\S+$/.test(email) && /^\+[1-9]\d{7,14}$/.test(phone)) onComplete({ name: name.trim(), email: email.trim(), phone }); }}><label>Nombre<input required autoComplete="name" value={name} onChange={(event) => setName(event.target.value)} /></label><label>Correo<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label><label>Teléfono<PhoneField value={phone} defaultCountry={config.phone.defaultCountry} allowedCountries={config.phone.allowedCountries} onChange={setPhone} /></label><button>Comenzar <span>↗</span></button></form></div>;
 }
 
-function Chat({ messages, quickReplies, input, typing, onInput, onAsk }: { messages: ExperienceMessage[]; quickReplies: string[]; input: string; typing: boolean; onInput: (value: string) => void; onAsk: (value: string) => Promise<void> }) {
+function Chat({ messages, handoffStatus, quickReplies, input, typing, onInput, onAsk }: { messages: ExperienceMessage[]; handoffStatus: string; quickReplies: string[]; input: string; typing: boolean; onInput: (value: string) => void; onAsk: (value: string) => Promise<void> }) {
   function submit(event: FormEvent) { event.preventDefault(); void onAsk(input); }
-  return <div className="wdm-chat"><div className="wdm-chat__messages" role="log" aria-live="polite">{messages.map((message, index) => <div className={`wdm-message is-${message.role}`} key={`${index}-${message.content}`}>{message.content}</div>)}{typing && <div className="wdm-message is-assistant is-typing">•••</div>}</div>{quickReplies.length > 0 && <div className="wdm-chat__quick">{quickReplies.map((reply) => <button key={reply} onClick={() => void onAsk(reply)}>{reply}<span>↗</span></button>)}</div>}<form onSubmit={submit}><input value={input} onChange={(event) => onInput(event.target.value)} placeholder="Escribe tu pregunta…" disabled={typing} /><button aria-label="Enviar" disabled={typing}>↑</button></form></div>;
+  const handoffLabel = handoffStatus === "operator_live"
+    ? "Alex está en la conversación"
+    : handoffStatus === "pending"
+      ? "Consultando la disponibilidad de Alex…"
+      : handoffStatus === "callback_pending" || handoffStatus === "queued"
+        ? "Seguimiento humano registrado"
+        : "";
+  return <div className="wdm-chat">{handoffLabel && <div className={`wdm-handoff-status is-${handoffStatus}`} role="status"><i />{handoffLabel}</div>}<div className="wdm-chat__messages" role="log" aria-live="polite">{messages.map((message, index) => <div className={`wdm-message is-${message.role}`} key={`${index}-${message.content}`}>{message.content}</div>)}{typing && <div className="wdm-message is-assistant is-typing">•••</div>}</div>{quickReplies.length > 0 && <div className="wdm-chat__quick">{quickReplies.map((reply) => <button key={reply} onClick={() => void onAsk(reply)}>{reply}<span>↗</span></button>)}</div>}<form onSubmit={submit}><input value={input} onChange={(event) => onInput(event.target.value)} placeholder="Escribe tu pregunta…" disabled={typing} /><button aria-label="Enviar" disabled={typing}>↑</button></form></div>;
 }
 
 function Call({ config, profile, onBack }: { config: ExperienceSiteConfig; profile: ExperienceProfile; onBack: () => void }) {

@@ -24,7 +24,15 @@ export default async (request: Request, _context: Context) => {
     const result = await response.json() as Record<string, unknown>;
     const reply = text(result.reply, 3000);
     if (!reply) return json({ error: "invalid_assistant_response" }, 502);
-    return json({ reply, quickReplies: Array.isArray(result.quickReplies) ? result.quickReplies.slice(0, 4) : [], action: result.action ?? null, intent: result.intent ?? null });
+    return json({
+      reply,
+      quickReplies: Array.isArray(result.quickReplies) ? result.quickReplies.slice(0, 4) : [],
+      action: result.action ?? null,
+      intent: result.intent ?? null,
+      handoffAction: result.handoff_action ?? result.handoffAction ?? null,
+      handoffId: result.handoff_id ?? result.handoffId ?? null,
+      handoffStatus: result.handoff_status ?? result.handoffStatus ?? null,
+    });
   } catch {
     return json({ error: "assistant_unavailable" }, 502);
   }

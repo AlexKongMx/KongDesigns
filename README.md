@@ -17,8 +17,8 @@ The runtime composes `Core + Vertical Pack + Client Config`; it does not contain
 
 - Booking: GoHighLevel embed configured in `src/experience/clients/kongDesigns.ts`.
 - Phone: shared MX/Canada/US country selector, normalized to E.164 before it reaches a function.
-- Chat: v2 request contract is prepared; the multi-vertical n8n prompt still needs to be activated.
-- Call: UI and request contract are prepared; the Kong Designs Twilio/n8n route still needs configuration.
+- Chat: connected to the shared WDM Experience Engine, including Telegram human handoff, operator replies, and session continuity.
+- Call: UI and request contract use the shared voice route; live regional transfer is handled by the WDM Human Handoff Service.
 - Avatar: stays explicitly unavailable until a Kong Designs D-ID agent is assigned.
 
 ## Local development
@@ -36,6 +36,7 @@ Use `netlify dev` when testing the serverless endpoints locally.
 - `N8N_WDM_CALL_WEBHOOK`
 - `N8N_WDM_EVENT_WEBHOOK`
 - `N8N_WDM_CONTACT_WEBHOOK`
+- `N8N_WDM_HANDOFF_STATUS_WEBHOOK`
 - `N8N_WDM_SHARED_SECRET`
 - `VITE_WDM_BOOKING_URL`
 - `VITE_WDM_AVATAR_URL`
